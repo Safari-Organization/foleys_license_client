@@ -61,6 +61,7 @@ if (FOLEYS_LICENSING_HAS_JUCE)
             # Accept either ios/libsodium.a or apple-xcframework layout ios/lib/libsodium.a
             if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
                 set(SODIUM_IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
+                target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios")
             else ()
                 message(FATAL_ERROR
                     "iOS build requires libsodium built for iOS. Place it at one of:\n"
@@ -69,7 +70,6 @@ if (FOLEYS_LICENSING_HAS_JUCE)
                     "Build with libsodium dist-build/ios.sh or apple-xcframework.sh and copy "
                     "the iOS libsodium.a (e.g. from libsodium-apple/ios/lib/libsodium.a) into the ios/ directory.")
             endif ()
-            set_property(TARGET sodium PROPERTY IMPORTED_LOCATION "${SODIUM_IMPORTED_LOCATION}")
     elseif (APPLE)
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/macos")
     else ()
