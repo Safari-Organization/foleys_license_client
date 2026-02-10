@@ -57,10 +57,23 @@ if (FOLEYS_LICENSING_HAS_JUCE)
     target_compile_definitions(foleys_license_juce INTERFACE FOLEYS_LICENSING_HAS_JUCE=1)
 
     # TODO: can this be added into the juce module?
-    if (APPLE)
+    if (CMAKE_SYSTEM_NAME STREQUAL "iOS")
+            # Accept either ios/libsodium.a or apple-xcframework layout ios/lib/libsodium.a
+            if (EXISTS "${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a")
+                set(SODIUM_IMPORTED_LOCATION "${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a")
+            elseif (EXISTS "${FOLEYS_SODIUM_COMMON}/ios/libsodium.a")
+                set(SODIUM_IMPORTED_LOCATION "${FOLEYS_SODIUM_COMMON}/ios/libsodium.a")
+            else ()
+                message(FATAL_ERROR
+                    "iOS build requires libsodium built for iOS. Place it at one of:\n"
+                    "  ${FOLEYS_SODIUM_COMMON}/ios/libsodium.a\n"
+                    "  ${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a\n"
+                    "Build with libsodium dist-build/ios.sh or apple-xcframework.sh and copy "
+                    "the iOS libsodium.a (e.g. from libsodium-apple/ios/lib/libsodium.a) into the ios/ directory.")
+            endif ()
+            set_property(TARGET sodium PROPERTY IMPORTED_LOCATION "${SODIUM_IMPORTED_LOCATION}")
+    elseif (APPLE)
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/macos")
-    elseif (IOS)
-        target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios")
     else ()
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/msvc-143")
     endif ()
