@@ -59,6 +59,8 @@ if (FOLEYS_LICENSING_HAS_JUCE)
     # TODO: can this be added into the juce module?
     if (APPLE)
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/macos")
+    elseif (IOS)
+        target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios")
     else ()
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/msvc-143")
     endif ()
