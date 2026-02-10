@@ -59,15 +59,13 @@ if (FOLEYS_LICENSING_HAS_JUCE)
     # TODO: can this be added into the juce module?
     if (CMAKE_SYSTEM_NAME STREQUAL "iOS")
             # Accept either ios/libsodium.a or apple-xcframework layout ios/lib/libsodium.a
-            if (EXISTS "${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a")
-                set(SODIUM_IMPORTED_LOCATION "${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a")
-            elseif (EXISTS "${FOLEYS_SODIUM_COMMON}/ios/libsodium.a")
-                set(SODIUM_IMPORTED_LOCATION "${FOLEYS_SODIUM_COMMON}/ios/libsodium.a")
+            if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
+                set(SODIUM_IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
             else ()
                 message(FATAL_ERROR
                     "iOS build requires libsodium built for iOS. Place it at one of:\n"
-                    "  ${FOLEYS_SODIUM_COMMON}/ios/libsodium.a\n"
-                    "  ${FOLEYS_SODIUM_COMMON}/ios/lib/libsodium.a\n"
+                    "  ${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a\n"
+                    "  ${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a\n"
                     "Build with libsodium dist-build/ios.sh or apple-xcframework.sh and copy "
                     "the iOS libsodium.a (e.g. from libsodium-apple/ios/lib/libsodium.a) into the ios/ directory.")
             endif ()
