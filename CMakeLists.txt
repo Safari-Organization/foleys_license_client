@@ -54,25 +54,22 @@ if (FOLEYS_LICENSING_HAS_JUCE)
 
     # TODO: can this be added into the juce module?
     if (CMAKE_SYSTEM_NAME STREQUAL "iOS")
-            # Accept either ios/libsodium.a or apple-xcframework layout ios/lib/libsodium.a
-            if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
-                set(SODIUM_IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
-                target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios")
-            else ()
-                message(FATAL_ERROR
-                    "iOS build requires libsodium built for iOS. Place it at one of:\n"
-                    "  ${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a\n"
-                    "  ${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a\n"
-                    "Build with libsodium dist-build/ios.sh or apple-xcframework.sh and copy "
-                    "the iOS libsodium.a (e.g. from libsodium-apple/ios/lib/libsodium.a) into the ios/ directory.")
-            endif ()
+        if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
+            set(SODIUM_IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios/libsodium.a")
+            add_library(sodium_ios STATIC IMPORTED GLOBAL)
+            set_target_properties(sodium_ios PROPERTIES IMPORTED_LOCATION "${SODIUM_IMPORTED_LOCATION}")
+            target_link_libraries(foleys_license_juce INTERFACE sodium_ios)
+            target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/ios")
+        else ()
+            message(FATAL_ERROR "iOS build requires libsodium built for iOS. Place it at ...")
+        endif ()
     elseif (APPLE)
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/macos")
     else ()
         target_link_directories(foleys_license_juce INTERFACE "${CMAKE_CURRENT_LIST_DIR}/foleys_license_common/libsodium/msvc-143")
     endif ()
 
-else()
+else ()
     # Don't use JUCE functions
     add_subdirectory(foleys_license_lib)
 
